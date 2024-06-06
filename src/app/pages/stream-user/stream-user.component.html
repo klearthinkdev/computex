@@ -1,0 +1,189 @@
+<div class="w-page h-screen flex flex-col">
+  <div class="flex items-center shrink-0 p-4">
+    <button
+      #menuTrigger="matMenuTrigger"
+      class="scale-125 origin-left"
+      mat-button
+      color="primary"
+      [matMenuTriggerFor]="menu"
+    >
+      <div class="flex items-center">
+        <span>帳戶紀錄</span>
+
+        <mat-icon
+          [ngClass]="menuTrigger.menuOpen ? 'rotate-0' : 'rotate-180'"
+          class="transition-transform"
+          >arrow_drop_up</mat-icon
+        >
+      </div>
+    </button>
+
+    <span class="grow"></span>
+
+    <!-- <button
+    class="mr-4"
+      type="button"
+      mat-mini-fab
+      color="primary"
+      matTooltip="篩選資料"
+      matBadge="0"
+      matBadgeColor="warn"
+    >
+      <mat-icon>filter_alt</mat-icon>
+    </button> -->
+
+    <button
+      class="transition-transform"
+      type="button"
+      mat-mini-fab
+      color="accent"
+      [disabled]="loading"
+      [matTooltip]="dataSource.data.length !== 0 ? '清除資料' : '選擇檔案'"
+      (click)="
+        dataSource.data.length !== 0
+          ? clearDataAndFileInput()
+          : fileInput.click()
+      "
+    >
+      <mat-icon
+        [ngClass]="dataSource.data.length !== 0 ? 'rotate-135' : 'rotate-0'"
+        >add</mat-icon
+      >
+    </button>
+  </div>
+
+  <div class="shrink-0 grow">
+    <mat-tab-group
+      class="w-full h-full"
+      [selectedIndex]="selectedTabIndex.value"
+      (selectedIndexChange)="selectedTabIndex.setValue($event)"
+    >
+      <mat-tab label="資料">
+        <div class="h-full flex flex-col">
+          <div
+            [class.overflow-hidden]="dataSource.data.length === 0"
+            class="table-box flex flex-col shrink-0 grow"
+          >
+            <table
+              mat-table
+              [dataSource]="dataSource"
+              matSort
+              matSortActive="create_time"
+              matSortDirection="asc"
+              matSortDisableClear
+            >
+              <tr
+                mat-header-row
+                *matHeaderRowDef="displayedColumns; sticky: true"
+              ></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+              <!-- # -->
+              <ng-container matColumnDef="#">
+                <th mat-header-cell *matHeaderCellDef>#</th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  <span>{{
+                    paginator.pageIndex * paginator.pageSize + (i + 1)
+                  }}</span>
+                </td>
+              </ng-container>
+
+              <!-- account: 帳號 -->
+              <ng-container matColumnDef="account">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>帳號</th>
+                <td mat-cell *matCellDef="let element">
+                  <span class="whitespace-nowrap">{{ element.account }}</span>
+                </td>
+              </ng-container>
+
+              <!-- create_time: 建立時間 -->
+              <ng-container matColumnDef="create_time">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  建立時間
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  <time
+                    [title]="element.create_time.$date | timeTitle"
+                    class="whitespace-nowrap"
+                    >{{
+                      element.create_time.$date | date : 'MM-dd ccc a HH:mm:ss'
+                    }}</time
+                  >
+                </td>
+              </ng-container>
+            </table>
+
+            <div
+              [class.hidden]="dataSource.data.length !== 0"
+              class="text-center content-center grow"
+            >
+              <button
+                type="button"
+                mat-fab
+                color="accent"
+                [disabled]="loading"
+                matTooltip="選擇檔案"
+                (click)="fileInput.click()"
+              >
+                <mat-icon [class.animate-spin]="loading">{{
+                  loading ? 'hourglass_full' : 'add'
+                }}</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <mat-paginator
+            class="shrink-0"
+            [pageSize]="20"
+            [showFirstLastButtons]="false"
+          ></mat-paginator>
+        </div>
+      </mat-tab>
+
+      <!-- 統計 -->
+      <mat-tab label="統計" [disabled]="dataSource.data.length === 0">
+        <div class="default-box flex flex-wrap content-start py-4">
+          @for (element of resultList; track $index) {
+          <div
+            class="w-full flex justify-center items-start py-4 sm:w-1/2 md:w-1/3 lg:w-1/4"
+          >
+            <app-result-card [result]="element"></app-result-card>
+          </div>
+          }
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
+
+<mat-menu #menu="matMenu">
+  <button
+    mat-menu-item
+    [routerLink]="['/stream-user']"
+    [routerLinkActive]="['bg-primary', 'text-white']"
+  >
+    帳戶紀錄
+  </button>
+  <button
+    mat-menu-item
+    [routerLink]="['/feedback']"
+    [routerLinkActive]="['bg-primary', 'text-white']"
+  >
+    問卷回覆
+  </button>
+  <button
+    mat-menu-item
+    [routerLink]="['/stream-log']"
+    [routerLinkActive]="['bg-primary', 'text-white']"
+  >
+    使用紀錄
+  </button>
+</mat-menu>
+
+<input
+  #fileInput
+  type="file"
+  accept="application/json"
+  class="hidden"
+  (change)="onFileChange($event)"
+/>
