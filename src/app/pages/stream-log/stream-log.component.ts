@@ -324,16 +324,12 @@ export class StreamLogComponent implements OnInit, AfterViewInit, OnDestroy {
 
       switch (active) {
         case 'log_account':
-          value = compareString(a.log_account, b.log_account);
+        case 'ip':
+        case 'user_agent':
+          value = compareString(a[active] ?? '', b[active] ?? '');
           break;
         case 'log_time':
-          value = compareDate(a.log_time.$date, b.log_time.$date);
-          break;
-        case 'ip':
-          value = compareString(a.ip ?? '', b.ip ?? '');
-          break;
-        case 'user_agent':
-          value = compareString(a.user_agent ?? '', b.user_agent ?? '');
+          value = compareDate(a[active].$date, b[active].$date);
           break;
       }
 

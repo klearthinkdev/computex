@@ -427,31 +427,19 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
 
       switch (active) {
         case 'experience':
-          value = a.experience - b.experience;
-          break;
         case 'speed_and_accuracy':
-          value = a.speed_and_accuracy - b.speed_and_accuracy;
-          break;
         case 'user_interface':
-          value = a.user_interface - b.user_interface;
-          break;
         case 'business_comm':
-          value = a.business_comm - b.business_comm;
-          break;
         case 'exhibitions':
-          value = +a.exhibitions - +b.exhibitions;
-          break;
         case 'potential_revenue':
-          value = a.potential_revenue - b.potential_revenue;
+          value = +a[active] - +b[active];
           break;
         case 'email':
-          value = compareString(a.email ?? '', b.email ?? '');
-          break;
         case 'create_account':
-          value = compareString(a.create_account, b.create_account);
+          value = compareString(a[active] ?? '', b[active] ?? '');
           break;
         case 'create_time':
-          value = compareDate(a.create_time.$date, b.create_time.$date);
+          value = compareDate(a[active].$date, b[active].$date);
           break;
       }
 

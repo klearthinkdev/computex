@@ -196,10 +196,10 @@ export class StreamUserComponent implements OnInit, AfterViewInit, OnDestroy {
 
       switch (active) {
         case 'account':
-          value = compareString(a.account, b.account);
+          value = compareString(a[active] ?? '', b[active] ?? '');
           break;
         case 'create_time':
-          value = compareDate(a.create_time.$date, b.create_time.$date);
+          value = compareDate(a[active].$date, b[active].$date);
           break;
       }
 
