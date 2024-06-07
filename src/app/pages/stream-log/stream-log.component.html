@@ -164,7 +164,7 @@
 
             <div
               [class.hidden]="dataSource.data.length !== 0"
-              class="text-center content-center grow"
+              class="flex justify-center items-center grow"
             >
               <button
                 type="button"
@@ -196,27 +196,30 @@
             @for (group of pairListGrouped; track $index) {
             <mat-expansion-panel>
               <mat-expansion-panel-header>
-                <mat-panel-title class="line-clamp-1">
-                  <span [title]="group.log_account">{{
-                    group.log_account
-                  }}</span>
+                <mat-panel-title
+                  class="block grow overflow-hidden whitespace-nowrap text-ellipsis"
+                  [title]="group.log_account"
+                >
+                  {{ group.log_account }}
                 </mat-panel-title>
 
-                <mat-panel-description>
-                  <span class="whitespace-nowrap">
-                    {{ group.pair_list.length }} 筆紀錄，共
-                    {{ group.log_time_total | timeSpan }}
-                  </span>
+                <mat-panel-description
+                  [ngClass]="SMQuery ? 'grow-[2]' : 'grow'"
+                  class="min-w-48 grow whitespace-nowrap shrink-0"
+                >
+                  <span> {{ group.pair_list.length }} 筆紀錄，共 </span>&nbsp;
+                  <span [innerHTML]="group.log_time_total | timeSpan"></span>
                 </mat-panel-description>
               </mat-expansion-panel-header>
 
+              <!-- TODO: group by date -->
               @for (pair of group.pair_list; track $index) {
               <div class="flex items-center my-1">
                 <span class="grow"></span>
 
                 <div
                   [ngClass]="SMQuery.matches ? 'w-auto px-3' : 'w-8'"
-                  class="h-8 rounded-[16px] content-center bg-green-100 mx-2"
+                  class="h-8 rounded-[16px] leading-8 bg-green-100 mx-2"
                 >
                   {{ SMQuery.matches ? 'start' : '' }}
                 </div>
@@ -229,8 +232,10 @@
 
                 <span> - </span>
 
-                <span class="w-32 text-center mx-2">
-                  {{ pair.log_time_diff | timeSpan : 2 }}
+                <span
+                  [innerHTML]="pair.log_time_diff | timeSpan : 2 : true"
+                  class="w-32 font-mono text-center mx-2"
+                >
                 </span>
 
                 <span> - </span>
@@ -243,7 +248,7 @@
 
                 <div
                   [ngClass]="SMQuery.matches ? 'w-auto px-3' : 'w-8'"
-                  class="h-8 rounded-[16px] content-center bg-red-100 mx-2"
+                  class="h-8 rounded-[16px] leading-8 bg-red-100 mx-2"
                 >
                   {{ SMQuery.matches ? 'end' : '' }}
                 </div>

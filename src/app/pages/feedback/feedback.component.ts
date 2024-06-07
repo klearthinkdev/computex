@@ -36,6 +36,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 
 import { Feedback, FeedbackGroup, QUESTIONS } from './feedback.models';
+import { StopClickPropagationDirective } from '../../shared/directives/stop-click-propagation.directive';
 import { ScoreComponent } from './score/score.component';
 import { Result } from '../../shared/models/result';
 import { ResultCardComponent } from '../../shared/components/result-card/result-card.component';
@@ -53,6 +54,7 @@ import { compareDate, compareString } from '../../shared/services/utils';
     ReactiveFormsModule,
     RouterLink,
     RouterLinkActive,
+    StopClickPropagationDirective,
     ScoreComponent,
     ResultCardComponent,
     TimeTitlePipe,
