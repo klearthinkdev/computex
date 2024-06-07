@@ -4,7 +4,10 @@
       <span>{{ result.title }}</span>
 
       @if (result.tooltip) {
-      <mat-icon class="absolute top-4 right-4" [matTooltip]="result.tooltip"
+      <mat-icon
+        class="absolute top-4 right-4"
+        [matTooltip]="result.tooltip"
+        matTooltipPosition="above"
         >info</mat-icon
       >
       }

@@ -20,17 +20,18 @@
 
     <span class="grow"></span>
 
-    <!-- <button
+    <button
       class="mr-4"
       type="button"
       mat-mini-fab
       color="primary"
       matTooltip="篩選資料"
+      matTooltipPosition="above"
       matBadge="0"
       matBadgeColor="warn"
     >
       <mat-icon>filter_alt</mat-icon>
-    </button> -->
+    </button>
 
     <button
       class="transition-transform"
@@ -102,7 +103,10 @@
               <!-- experience: 使用體驗 -->
               <ng-container matColumnDef="experience">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                  <mat-icon class="mr-1" [matTooltip]="questions[0]"
+                  <mat-icon
+                    class="mr-1"
+                    [matTooltip]="questions[0]"
+                    matTooltipPosition="above"
                     >info</mat-icon
                   >
                   <span>使用體驗</span>
@@ -115,7 +119,10 @@
               <!-- speed_and_accuracy: 速度與準確度 -->
               <ng-container matColumnDef="speed_and_accuracy">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                  <mat-icon class="mr-1" [matTooltip]="questions[1]"
+                  <mat-icon
+                    class="mr-1"
+                    [matTooltip]="questions[1]"
+                    matTooltipPosition="above"
                     >info</mat-icon
                   >
                   <span> 速度與準確度</span>
@@ -131,7 +138,10 @@
               <!-- user_interface: 介面操作 -->
               <ng-container matColumnDef="user_interface">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                  <mat-icon class="mr-1" [matTooltip]="questions[2]"
+                  <mat-icon
+                    class="mr-1"
+                    [matTooltip]="questions[2]"
+                    matTooltipPosition="above"
                     >info</mat-icon
                   >
                   <span> 介面操作</span>
@@ -147,7 +157,10 @@
               <!-- business_comm: 商洽溝通 -->
               <ng-container matColumnDef="business_comm">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                  <mat-icon class="mr-1" [matTooltip]="questions[3]"
+                  <mat-icon
+                    class="mr-1"
+                    [matTooltip]="questions[3]"
+                    matTooltipPosition="above"
                     >info</mat-icon
                   >
                   <span> 商洽溝通</span>
@@ -163,7 +176,10 @@
               <!-- exhibitions: 參觀展覽 -->
               <ng-container matColumnDef="exhibitions">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                  <mat-icon class="mr-1" [matTooltip]="questions[4]"
+                  <mat-icon
+                    class="mr-1"
+                    [matTooltip]="questions[4]"
+                    matTooltipPosition="above"
                     >info</mat-icon
                   >
                   <span> 參觀展覽</span>
@@ -179,7 +195,10 @@
               <!-- potential_revenue: 潛在營收 -->
               <ng-container matColumnDef="potential_revenue">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                  <mat-icon class="mr-1" [matTooltip]="questions[5]"
+                  <mat-icon
+                    class="mr-1"
+                    [matTooltip]="questions[5]"
+                    matTooltipPosition="above"
                     >info</mat-icon
                   >
                   <span> 潛在營收</span>
@@ -284,7 +303,10 @@
                 <div
                   class="w-8 h-8 flex items-center origin-center -rotate-45 mt-8 mx-2"
                 >
-                  <mat-icon class="shrink-0 mr-1" [matTooltip]="questions[i]"
+                  <mat-icon
+                    class="shrink-0 mr-1"
+                    [matTooltip]="questions[i]"
+                    matTooltipPosition="above"
                     >info</mat-icon
                   >
                   <span class="whitespace-nowrap">{{ questionTitle }}</span>
