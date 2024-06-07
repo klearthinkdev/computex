@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   OnDestroy,
@@ -62,6 +63,7 @@ import { compareDate, compareString } from '../../shared/services/utils';
     MatSortModule,
   ],
   templateUrl: './stream-user.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StreamUserComponent implements OnInit, AfterViewInit, OnDestroy {
   private destroy$ = new Subject<null>();
@@ -125,11 +127,11 @@ export class StreamUserComponent implements OnInit, AfterViewInit, OnDestroy {
           }
 
           // 統計
-          setTimeout(() => {
-            this.resultList[0].value = `${elementList.length}`;
-          });
+          this.updateResultList(elementList);
         }),
         catchError((err) => {
+          console.error(err);
+
           this.matSnackBar.open('數據解析失敗');
 
           this.clearDataAndFileInput();
@@ -205,6 +207,12 @@ export class StreamUserComponent implements OnInit, AfterViewInit, OnDestroy {
 
       return value * (direction === 'asc' ? 1 : -1);
     });
+  }
+
+  updateResultList(elementList: Array<StreamUser>): void {
+    const next = [{ ...this.resultList[0], value: elementList.length }];
+
+    this.resultList = next;
   }
 
   ngOnDestroy(): void {

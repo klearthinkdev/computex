@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -79,6 +80,7 @@ import { compareDate, compareString } from '../../shared/services/utils';
     MatSortModule,
   ],
   templateUrl: './stream-log.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StreamLogComponent implements OnInit, AfterViewInit, OnDestroy {
   private destroy$ = new Subject<null>();
@@ -94,6 +96,7 @@ export class StreamLogComponent implements OnInit, AfterViewInit, OnDestroy {
   acceptList: Array<string> = ['application/json'];
 
   // 資料
+  elementList: Array<StreamLog> = [];
   dataSource = new MatTableDataSource<StreamLog>([]);
   displayedColumns = [
     '#',
@@ -189,30 +192,18 @@ export class StreamLogComponent implements OnInit, AfterViewInit, OnDestroy {
         tap(([viewInit, elementList]) => {
           const verified = this.verifyData(elementList);
 
+          this.elementList = elementList;
           this.dataSource.data = verified;
 
           if (elementList.length === 0) {
             this.selectedTabIndex.setValue(0);
           }
 
-          // 統計
-          setTimeout(() => {
-            this.resultList[1].value = `${elementList.length}`;
-            this.resultList[2].value = `${
-              elementList.filter(
-                (element) => element.log_type === this.logTypeObj.Start
-              ).length
-            }`;
-            this.resultList[3].value = `${
-              elementList.filter(
-                (element) => element.log_type === this.logTypeObj.End
-              ).length
-            }`;
-          });
-
           this.pairList$.next(this.pairData(verified));
         }),
         catchError((err) => {
+          console.error(err);
+
           this.matSnackBar.open('數據解析失敗');
 
           this.clearDataAndFileInput();
@@ -250,19 +241,7 @@ export class StreamLogComponent implements OnInit, AfterViewInit, OnDestroy {
             .sort((a, b) => compareString(a.log_account, b.log_account));
 
           // 統計
-          setTimeout(() => {
-            this.resultList[0].value = `${this.pairListGrouped.length}`;
-            this.resultList[4].value = `${this.pairListGrouped.reduce(
-              (sum, group) => sum + group.pair_list.length,
-              0
-            )}`;
-            this.resultList[5].value = hhmmss(
-              this.pairListGrouped.reduce(
-                (sum, group) => sum + group.log_time_total,
-                0
-              )
-            );
-          });
+          this.updateResultList(this.elementList, this.pairListGrouped);
         })
       )
       .subscribe();
@@ -309,6 +288,51 @@ export class StreamLogComponent implements OnInit, AfterViewInit, OnDestroy {
     this.clearData();
 
     this.fileInput.nativeElement.value = '';
+  }
+
+  updateResultList(
+    elementList: Array<StreamLog>,
+    pairListGrouped: Array<StreamLogPairGroup>
+  ): void {
+    const totalObj = pairListGrouped.reduce(
+      (obj, group) => {
+        obj.pair_count += group.pair_list.length;
+        obj.log_time += group.log_time_total;
+
+        return obj;
+      },
+      {
+        pair_count: 0,
+        log_time: 0,
+      }
+    );
+
+    const next = [
+      { ...this.resultList[0], value: pairListGrouped.length },
+      { ...this.resultList[1], value: elementList.length },
+      {
+        ...this.resultList[2],
+        value: elementList.filter(
+          (element) => element.log_type === this.logTypeObj.Start
+        ).length,
+      },
+      {
+        ...this.resultList[3],
+        value: elementList.filter(
+          (element) => element.log_type === this.logTypeObj.End
+        ).length,
+      },
+      {
+        ...this.resultList[4],
+        value: totalObj.pair_count,
+      },
+      {
+        ...this.resultList[5],
+        value: hhmmss(totalObj.log_time),
+      },
+    ];
+
+    this.resultList = next;
   }
 
   sortData(

@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   Inject,
@@ -35,6 +36,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 
 import { Feedback, FeedbackGroup, QUESTIONS } from './feedback.models';
+import { ScoreComponent } from './score/score.component';
 import { Result } from '../../shared/models/result';
 import { ResultCardComponent } from '../../shared/components/result-card/result-card.component';
 import { TimeTitlePipe } from '../../shared/pipes';
@@ -51,6 +53,7 @@ import { compareDate, compareString } from '../../shared/services/utils';
     ReactiveFormsModule,
     RouterLink,
     RouterLinkActive,
+    ScoreComponent,
     ResultCardComponent,
     TimeTitlePipe,
     MatBadgeModule,
@@ -67,6 +70,7 @@ import { compareDate, compareString } from '../../shared/services/utils';
     MatSortModule,
   ],
   templateUrl: './feedback.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
   private destroy$ = new Subject<null>();
@@ -178,19 +182,6 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
     },
   ];
 
-  scoreMapA: { [key: string]: string } = {
-    [1]: 'bg-red-300',
-    [2]: 'bg-red-100',
-    [3]: 'bg-gray-100',
-    [4]: 'bg-green-100',
-    [5]: 'bg-green-300',
-    [6]: 'bg-green-500',
-  };
-  scoreMapB: { [key: string]: string } = {
-    [1]: 'bg-green-500',
-    [0]: 'bg-red-500',
-  };
-
   questions = QUESTIONS;
   questionTitleList = [
     '使用體驗',
@@ -213,7 +204,17 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dataSource.sortData = this.sortData;
     this.fileReader.onload = (e) => {
       try {
-        const data = JSON.parse(this.fileReader.result as string);
+        const data = JSON.parse(
+          this.fileReader.result as string
+        ) as Array<Feedback>;
+
+        data.forEach((element) => {
+          element.experience += 3;
+          element.speed_and_accuracy += 3;
+          element.user_interface += 3;
+          element.business_comm += 3;
+          element.potential_revenue -= 1;
+        });
 
         this.dataService.feedbackList$.next(data);
 
@@ -229,14 +230,6 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         tap(([viewInit, elementList]) => {
-          elementList.forEach((element) => {
-            element.experience += 3;
-            element.speed_and_accuracy += 3;
-            element.user_interface += 3;
-            element.business_comm += 3;
-            element.potential_revenue -= 1;
-          });
-
           this.dataSource.data = elementList;
 
           if (elementList.length === 0) {
@@ -285,82 +278,11 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
             .sort((a, b) => compareString(a.create_account, b.create_account));
 
           // 統計
-          setTimeout(() => {
-            const totalCount = elementList.length;
-            const totalObj = this.feedbackListGrouped.reduce(
-              (obj, group) => {
-                obj.experience += group.experience_total;
-                obj.speed_and_accuracy += group.speed_and_accuracy_total;
-                obj.user_interface += group.user_interface_total;
-                obj.business_comm += group.business_comm_total;
-                obj.exhibitions += group.exhibitions_total;
-                obj.potential_revenue += group.potential_revenue_total;
-
-                return obj;
-              },
-              {
-                experience: 0,
-                speed_and_accuracy: 0,
-                user_interface: 0,
-                business_comm: 0,
-                exhibitions: 0,
-                potential_revenue: 0,
-              }
-            );
-
-            const averageObj = {
-              experience: totalObj.experience / totalCount,
-              speed_and_accuracy: totalObj.speed_and_accuracy / totalCount,
-              user_interface: totalObj.user_interface / totalCount,
-              business_comm: totalObj.business_comm / totalCount,
-              potential_revenue: totalObj.potential_revenue / totalCount,
-            };
-
-            this.resultList[0].value = `${this.feedbackListGrouped.length}`;
-            this.resultList[1].value = `${totalCount}`;
-            this.resultList[2].value = `${formatNumber(
-              (averageObj.experience +
-                averageObj.speed_and_accuracy +
-                averageObj.user_interface +
-                averageObj.business_comm +
-                averageObj.potential_revenue) /
-                5,
-              this.locale,
-              '1.2-2'
-            )}`;
-            this.resultList[3].value = `${formatNumber(
-              averageObj.experience,
-              this.locale,
-              '1.2-2'
-            )}`;
-            this.resultList[4].value = `${formatNumber(
-              averageObj.speed_and_accuracy,
-              this.locale,
-              '1.2-2'
-            )}`;
-            this.resultList[5].value = `${formatNumber(
-              averageObj.user_interface,
-              this.locale,
-              '1.2-2'
-            )}`;
-            this.resultList[6].value = `${formatNumber(
-              averageObj.business_comm,
-              this.locale,
-              '1.2-2'
-            )}`;
-            this.resultList[7].value = `${formatNumber(
-              (totalObj.exhibitions / totalCount) * 100,
-              this.locale,
-              '1.2-2'
-            )}%`;
-            this.resultList[8].value = `${formatNumber(
-              averageObj.potential_revenue,
-              this.locale,
-              '1.2-2'
-            )}`;
-          });
+          this.updateResultList(elementList, this.feedbackListGrouped);
         }),
         catchError((err) => {
+          console.error(err);
+
           this.matSnackBar.open('數據解析失敗');
 
           this.clearDataAndFileInput();
@@ -412,6 +334,80 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
     this.clearData();
 
     this.fileInput.nativeElement.value = '';
+  }
+
+  updateResultList(
+    elementList: Array<Feedback>,
+    feedbackListGrouped: Array<FeedbackGroup>
+  ): void {
+    const totalCount = elementList.length;
+    const totalObj = feedbackListGrouped.reduce(
+      (obj, group) => {
+        obj.experience += group.experience_total;
+        obj.speed_and_accuracy += group.speed_and_accuracy_total;
+        obj.user_interface += group.user_interface_total;
+        obj.business_comm += group.business_comm_total;
+        obj.exhibitions += group.exhibitions_total;
+        obj.potential_revenue += group.potential_revenue_total;
+
+        return obj;
+      },
+      {
+        experience: 0,
+        speed_and_accuracy: 0,
+        user_interface: 0,
+        business_comm: 0,
+        exhibitions: 0,
+        potential_revenue: 0,
+      }
+    );
+    const averageObj = {
+      experience: totalObj.experience / totalCount,
+      speed_and_accuracy: totalObj.speed_and_accuracy / totalCount,
+      user_interface: totalObj.user_interface / totalCount,
+      business_comm: totalObj.business_comm / totalCount,
+      potential_revenue: totalObj.potential_revenue / totalCount,
+    };
+
+    const next = [
+      { ...this.resultList[0], value: feedbackListGrouped.length },
+      { ...this.resultList[1], value: totalCount },
+      {
+        ...this.resultList[2],
+        value: this.formatScore(
+          Object.values(averageObj).reduce((total, score) => total + score, 0) /
+            5
+        ),
+      },
+      { ...this.resultList[3], value: this.formatScore(averageObj.experience) },
+      {
+        ...this.resultList[4],
+        value: this.formatScore(averageObj.speed_and_accuracy),
+      },
+      {
+        ...this.resultList[5],
+        value: this.formatScore(averageObj.user_interface),
+      },
+      {
+        ...this.resultList[6],
+        value: this.formatScore(averageObj.business_comm),
+      },
+      {
+        ...this.resultList[7],
+        value:
+          this.formatScore((totalObj.exhibitions / totalCount) * 100) + '%',
+      },
+      {
+        ...this.resultList[8],
+        value: this.formatScore(averageObj.potential_revenue),
+      },
+    ];
+
+    this.resultList = next;
+  }
+
+  formatScore(score: number): string {
+    return formatNumber(score, this.locale, '1.2-2');
   }
 
   sortData(

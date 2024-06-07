@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 // @angular/material
 import { MatCardModule } from '@angular/material/card';
@@ -13,6 +13,7 @@ import { NgClass } from '@angular/common';
   standalone: true,
   imports: [NgClass, MatCardModule, MatIconModule, MatTooltipModule],
   templateUrl: './result-card.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResultCardComponent {
   @Input() result!: Result;

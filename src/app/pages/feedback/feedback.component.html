@@ -108,12 +108,7 @@
                   <span>使用體驗</span>
                 </th>
                 <td mat-cell *matCellDef="let element">
-                  <div
-                    [ngClass]="scoreMapA[element.experience]"
-                    class="w-8 h-8 rounded-[16px] text-center content-center"
-                  >
-                    {{ element.experience }}
-                  </div>
+                  <app-score name="experience" [feedback]="element"></app-score>
                 </td>
               </ng-container>
 
@@ -126,12 +121,10 @@
                   <span> 速度與準確度</span>
                 </th>
                 <td mat-cell *matCellDef="let element">
-                  <div
-                    [ngClass]="scoreMapA[element.speed_and_accuracy]"
-                    class="w-8 h-8 rounded-[16px] text-center content-center"
-                  >
-                    {{ element.speed_and_accuracy }}
-                  </div>
+                  <app-score
+                    name="speed_and_accuracy"
+                    [feedback]="element"
+                  ></app-score>
                 </td>
               </ng-container>
 
@@ -144,12 +137,10 @@
                   <span> 介面操作</span>
                 </th>
                 <td mat-cell *matCellDef="let element">
-                  <div
-                    [ngClass]="scoreMapA[element.user_interface]"
-                    class="w-8 h-8 rounded-[16px] text-center content-center"
-                  >
-                    {{ element.user_interface }}
-                  </div>
+                  <app-score
+                    name="user_interface"
+                    [feedback]="element"
+                  ></app-score>
                 </td>
               </ng-container>
 
@@ -162,12 +153,10 @@
                   <span> 商洽溝通</span>
                 </th>
                 <td mat-cell *matCellDef="let element">
-                  <div
-                    [ngClass]="scoreMapA[element.business_comm]"
-                    class="w-8 h-8 rounded-[16px] text-center content-center"
-                  >
-                    {{ element.business_comm }}
-                  </div>
+                  <app-score
+                    name="business_comm"
+                    [feedback]="element"
+                  ></app-score>
                 </td>
               </ng-container>
 
@@ -180,10 +169,10 @@
                   <span> 參觀展覽</span>
                 </th>
                 <td mat-cell *matCellDef="let element">
-                  <div
-                    [ngClass]="scoreMapB[+element.exhibitions]"
-                    class="w-8 h-8 rounded-[16px] text-center content-center"
-                  ></div>
+                  <app-score
+                    name="exhibitions"
+                    [feedback]="element"
+                  ></app-score>
                 </td>
               </ng-container>
 
@@ -196,12 +185,10 @@
                   <span> 潛在營收</span>
                 </th>
                 <td mat-cell *matCellDef="let element">
-                  <div
-                    [ngClass]="scoreMapA[element.potential_revenue + 1]"
-                    class="w-8 h-8 rounded-[16px] text-center content-center"
-                  >
-                    {{ element.potential_revenue }}
-                  </div>
+                  <app-score
+                    name="potential_revenue"
+                    [feedback]="element"
+                  ></app-score>
                 </td>
               </ng-container>
 
@@ -311,45 +298,41 @@
               <div class="flex items-center my-1">
                 <span class="grow"></span>
 
-                <div
-                  [ngClass]="scoreMapA[feedback.experience]"
-                  class="w-8 h-8 rounded-[16px] text-center content-center mx-2"
-                >
-                  {{ feedback.experience }}
-                </div>
+                <app-score
+                  class="mx-2"
+                  name="experience"
+                  [feedback]="feedback"
+                ></app-score>
 
-                <div
-                  [ngClass]="scoreMapA[feedback.speed_and_accuracy]"
-                  class="w-8 h-8 rounded-[16px] text-center content-center mx-2"
-                >
-                  {{ feedback.speed_and_accuracy }}
-                </div>
+                <app-score
+                  class="mx-2"
+                  name="speed_and_accuracy"
+                  [feedback]="feedback"
+                ></app-score>
 
-                <div
-                  [ngClass]="scoreMapA[feedback.user_interface]"
-                  class="w-8 h-8 rounded-[16px] text-center content-center mx-2"
-                >
-                  {{ feedback.user_interface }}
-                </div>
+                <app-score
+                  class="mx-2"
+                  name="user_interface"
+                  [feedback]="feedback"
+                ></app-score>
 
-                <div
-                  [ngClass]="scoreMapA[feedback.business_comm]"
-                  class="w-8 h-8 rounded-[16px] text-center content-center mx-2"
-                >
-                  {{ feedback.business_comm }}
-                </div>
+                <app-score
+                  class="mx-2"
+                  name="business_comm"
+                  [feedback]="feedback"
+                ></app-score>
 
-                <div
-                  [ngClass]="scoreMapB[+feedback.exhibitions]"
-                  class="w-8 h-8 rounded-[16px] text-center content-center mx-2"
-                ></div>
+                <app-score
+                  class="mx-2"
+                  name="exhibitions"
+                  [feedback]="feedback"
+                ></app-score>
 
-                <div
-                  [ngClass]="scoreMapA[feedback.potential_revenue + 1]"
-                  class="w-8 h-8 rounded-[16px] text-center content-center mx-2"
-                >
-                  {{ feedback.potential_revenue }}
-                </div>
+                <app-score
+                  class="mx-2"
+                  name="potential_revenue"
+                  [feedback]="feedback"
+                ></app-score>
 
                 <span class="grow"></span>
               </div>
