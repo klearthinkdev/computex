@@ -69,13 +69,13 @@ body {
 
 .table-box {
   max-height: calc(
-    100vh - /* mat-min-fab */ 48px - /* padding */ 32px - /* mat-tab-header */
+    100dvh - /* mat-min-fab */ 48px - /* padding */ 32px - /* mat-tab-header */
       56px - /* mat-paginator */ 56px
   );
 }
 .default-box {
   max-height: calc(
-    100vh - /* mat-min-fab */ 48px - /* padding */ 32px - /* mat-tab-header */
+    100dvh - /* mat-min-fab */ 48px - /* padding */ 32px - /* mat-tab-header */
       56px
   );
   overflow: auto;
