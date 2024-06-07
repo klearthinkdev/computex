@@ -368,6 +368,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
       business_comm: totalObj.business_comm / totalCount,
       potential_revenue: totalObj.potential_revenue / totalCount,
     };
+    const exhibitions_percentage = totalObj.exhibitions / totalCount;
 
     const next = [
       { ...this.resultList[0], value: feedbackListGrouped.length },
@@ -395,7 +396,9 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
       {
         ...this.resultList[7],
         value:
-          this.formatScore((totalObj.exhibitions / totalCount) * 100) + '%',
+          (exhibitions_percentage >= 0.99995
+            ? '100'
+            : this.formatScore(exhibitions_percentage * 100)) + '%',
       },
       {
         ...this.resultList[8],
